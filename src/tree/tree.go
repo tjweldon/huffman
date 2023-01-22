@@ -15,7 +15,7 @@ func MakeSymbolFrequencies() SymbolFrequencies {
 }
 
 func (sf SymbolFrequencies) RegisterOccurrence(b byte) {
-	sf[int(b)] ++
+	sf[int(b)]++
 }
 
 func (sf SymbolFrequencies) String() string {
@@ -40,18 +40,18 @@ func CountSymbols(text []byte) SymbolFrequencies {
 
 type WeightedSymbols struct {
 	Symbols []byte
-	Weight int
-	Node *Node
+	Weight  int
+	Node    *Node
 }
 
 func (w WeightedSymbols) String() string {
-	return fmt.Sprintf("<0x% 00x | %s> %d", w.Symbols ,string(w.Symbols), w.Weight)
+	return fmt.Sprintf("<0x% 00x | %s> %d", w.Symbols, string(w.Symbols), w.Weight)
 }
 
 type Node struct {
-	Parent *Node
+	Parent   *Node
 	Children [2]*Node
-	Symbols WeightedSymbols
+	Symbols  WeightedSymbols
 }
 
 func (n *Node) String() string {
@@ -59,11 +59,11 @@ func (n *Node) String() string {
 		[]string{
 			"NODE:",
 			"symbols:",
-			"\t" + fmt.Sprint(n.Symbols), 
+			"\t" + fmt.Sprint(n.Symbols),
 			"children: ",
-			"\t" + fmt.Sprint(n.Children[0]), 
+			"\t" + fmt.Sprint(n.Children[0]),
 			"\t" + fmt.Sprint(n.Children[1]),
-		}, 
+		},
 		"\n",
 	)
 }
@@ -88,8 +88,8 @@ func (n *Node) Concat(m *Node) *Node {
 
 	newSymbols := WeightedSymbols{
 		Symbols: append(n.Symbols.Symbols, m.Symbols.Symbols...),
-		Weight: n.Symbols.Weight + m.Symbols.Weight,
-		Node: newNode,
+		Weight:  n.Symbols.Weight + m.Symbols.Weight,
+		Node:    newNode,
 	}
 	newNode.Symbols = newSymbols
 
@@ -147,7 +147,6 @@ func (n *Node) Walk(callback func(n *Node, c []int), code []int) {
 	}
 }
 
-
 type NodeArray []*Node
 
 func (na NodeArray) Len() int {
@@ -181,7 +180,7 @@ func FromFrequencies(sf SymbolFrequencies) NodeArray {
 
 func (na NodeArray) Include(n *Node) NodeArray {
 	na = NodeArray(append(na, n))
-	
+
 	return na.Sort()
 }
 
@@ -199,7 +198,7 @@ func (na NodeArray) Sort() NodeArray {
 func (na NodeArray) String() string {
 	elems := make([]string, na.Len())
 	for i, node := range na {
-		elems[i] = "<"+string(node.Symbols.Symbols)+">"
+		elems[i] = "<" + string(node.Symbols.Symbols) + ">"
 	}
 
 	return strings.Join(elems, ";")

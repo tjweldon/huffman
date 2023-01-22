@@ -6,7 +6,10 @@ var source = []byte("In computer science and information theory, a Huffman code 
 
 func TestEncoder_Encode(t *testing.T) {
 	encoder := EncoderFromData(source)
-	testCases := []struct{in []byte; out []byte} {
+	testCases := []struct {
+		in  []byte
+		out []byte
+	}{
 		// the coded message always expresses the number of unoccupied bits in the penultimate
 		// byte with the final byte, hence the decimal expression of the final byte in each output value
 		{[]byte{0x49, 0x6f}, []byte{0b01011001, 0b11100000, 5}},
@@ -17,7 +20,7 @@ func TestEncoder_Encode(t *testing.T) {
 		actualCoded := encoder.Encode(testCase.in)
 		if len(actualCoded) > len(testCase.out) {
 			t.Errorf(
-				"The expected length of the coded bytes was %d, got %d", 
+				"The expected length of the coded bytes was %d, got %d",
 				len(testCase.out), len(actualCoded),
 			)
 			t.FailNow()
@@ -36,7 +39,10 @@ func TestEncoder_Encode(t *testing.T) {
 
 func TestEncoder_Decode(t *testing.T) {
 	encoder := EncoderFromData(source)
-	testCases := []struct{in []byte; out []byte} {
+	testCases := []struct {
+		in  []byte
+		out []byte
+	}{
 		// the coded message always expresses the number of unoccupied bits in the penultimate
 		// byte with the final byte, hence the decimal expression of the final byte in each input value
 		{[]byte{0b01011001, 0b11100000, 5}, []byte{0x49, 0x6f}},
@@ -47,7 +53,7 @@ func TestEncoder_Decode(t *testing.T) {
 		actualMessage := encoder.Decode(testCase.in)
 		if len(actualMessage) > len(testCase.out) {
 			t.Errorf(
-				"Case %d: The expected length of the message bytes was %d, got %d\nexpected: % x\nactual: % x", 
+				"Case %d: The expected length of the message bytes was %d, got %d\nexpected: % x\nactual: % x",
 				i, len(testCase.out), len(actualMessage), testCase.out, actualMessage,
 			)
 			t.FailNow()
@@ -61,7 +67,7 @@ func TestEncoder_Decode(t *testing.T) {
 				)
 			}
 		}
-		
+
 	}
 }
 

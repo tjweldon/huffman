@@ -11,12 +11,12 @@ import (
 )
 
 type Cli struct {
-	Encode *EncodeMode `arg:"subcommand:encode" help:"use the --help flag with this subcommand to see its docs"`	
-	Decode *DecodeMode `arg:"subcommand:decode" help:"use the --help flag with this subcommand to see its docs"`	
+	Encode *EncodeMode `arg:"subcommand:encode" help:"use the --help flag with this subcommand to see its docs"`
+	Decode *DecodeMode `arg:"subcommand:decode" help:"use the --help flag with this subcommand to see its docs"`
 }
 
 type EncodeMode struct {
-	Source string `arg:"positional" help:"The text file to compress"`
+	Source      string `arg:"positional" help:"The text file to compress"`
 	Destination string `arg:"-o, --out" help:"Where to write the output"`
 }
 
@@ -26,7 +26,7 @@ func (em *EncodeMode) Run() {
 	}
 	if em.Destination == "" {
 		fragments := strings.Split(em.Source, ".")
-		dstFragments := append(fragments[:len(fragments) - 1], "huff")
+		dstFragments := append(fragments[:len(fragments)-1], "huff")
 		em.Destination = strings.Join(dstFragments, ".")
 	}
 
@@ -36,7 +36,7 @@ func (em *EncodeMode) Run() {
 }
 
 type DecodeMode struct {
-	Source string `arg:"positional" help:"The text file to compress"`
+	Source      string `arg:"positional" help:"The text file to compress"`
 	Destination string `arg:"-o, --out" help:"Where to write the output"`
 }
 
@@ -46,7 +46,7 @@ func (dm *DecodeMode) Run() {
 	}
 	if dm.Destination == "" {
 		fragments := strings.Split(dm.Source, ".")
-		dstFragments := append(fragments[:len(fragments) - 1], "txt")
+		dstFragments := append(fragments[:len(fragments)-1], "txt")
 		dm.Destination = strings.Join(dstFragments, ".")
 	}
 
@@ -84,5 +84,3 @@ func main() {
 		args.Decode.Run()
 	}
 }
-
-

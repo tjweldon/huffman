@@ -30,18 +30,28 @@ The format is `|semantics; encoding; multiplicity|` where the `|` represents the
 The encoding `huffman` means the variable (max 8) bit length huffman coding of a symbol.
 
 ```
-|code table length; u8; 1|											<- The number of rows to parse when extracting the encoding table.
-|symbol to padded huffman code mapping; 3*u8; code table length|	<- Each code stored as one u8 for the input symbol, the most significant bits of the next byte are the huffman code
-																	   then the next byte expresses how much of the previous byte is to be ignored when decoding (i.e. 8-length of code).
-|encoded symbol; huffman; input length in bytes|  					<- The encoded message does not necessarily end at a byte boundary
-|0 bit literal; bit; padding length| 								<- Any unoccupied bits in the last byte are junk,
-|padding length; u8; 1|												<- unfortunately we need to record how much of the junk to ignore on decode
+// The number of rows to parse when extracting the encoding table.
+|code table length; u8; 1|											
+
+// Each code stored as one u8 for the input symbol, the most significant bits of the next byte are the huffman code
+// then the next byte expresses how much of the previous byte is to be ignored when decoding (i.e. 8 - <length of huffman code>).
+|symbol, padded huffman code, padding size; 3*u8; code table length|	
+
+// The encoded message does not necessarily end at a byte boundary
+|encoded symbol; huffman; input length in bytes|  					
+
+// Any unoccupied bits in the last byte are junk,
+|0 bit literal; 1 bit; padding length| 								
+
+//unfortunately we need to record how much of the junk to ignore on decode since one or more 0 bits is a valid huffman code.
+|padding length; u8; 1|												
 ```
 
 ### Limitations
 
  - Only works on 8 bit encoded text (ascii etc.)
  - Does everything in memory so big input files may break it, or make it profoundly slow. I haven't tried so who knows.
+ - Very small input files will end up larger after compression. Take the above format for a two byte input like 'Hi', after compression this has a 7 byte header of the table length 2 (as u8), and then the next six (2 symbols * (3 * u8 per symbol)) bytes of the table, followed by the encoded message that would literally be two bits and finally one byte to record that the last six bits of the encoded message is to be ignored on decode.
 
 ### How does it perform on real world test data?
 
